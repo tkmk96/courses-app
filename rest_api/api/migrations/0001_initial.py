@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
             name='Course',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=256, unique=True)),
+                ('name', models.CharField(max_length=256)),
                 ('description', models.CharField(max_length=1024)),
                 ('price', models.DecimalField(decimal_places=2, max_digits=5)),
                 ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.Category')),
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField(auto_now_add=True)),
-                ('rating', models.IntegerField(blank=True, null=True)),
+                ('rating', models.FloatField(blank=True, null=True)),
                 ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.Course')),
             ],
         ),
