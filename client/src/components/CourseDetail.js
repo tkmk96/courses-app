@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import StarRatings from 'react-star-ratings';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
+import SimilarCourses from './SimilarCourses';
 
 const course = {
     category: 1,
@@ -18,12 +19,12 @@ const course = {
 class CourseDetail extends Component {
 
     state = {
-        courses: []
+        similarCourses: []
     };
 
     componentDidMount() {
         axios.get('/course').then(({data}) => {
-            this.setState({courses: data.slice(0, 4)});
+            this.setState({similarCourses: data.slice(0, 4)});
         })
     }
 
@@ -43,36 +44,9 @@ class CourseDetail extends Component {
                 </div>
                 <h4 className='header'>{course.description}</h4>
                 <button className='btn btn-lg btn-warning'>Buy for {course.price} €</button>
-                {this.renderSimilarCourses()}
+                <SimilarCourses courses={this.state.similarCourses}/>
             </div>
         );
-    }
-
-    renderSimilarCourses() {
-        return (
-            <div className='recommend'>
-                <h2 className='header'>Similar courses</h2>
-                <div>
-                    {this.state.courses.map(course => {
-                        return (
-                            <div key={course.id} className='course col-sm-3'>
-                                <h5 className='header'>{course.name}</h5>
-                                <div className='header'>
-                                    <StarRatings
-                                        rating={3.5}
-                                        starRatedColor="blue"
-                                        numberOfStars={5}
-                                        starDimension='15px'
-                                        starSpacing='3px'
-                                    />
-                                </div>
-                                <Link className='btn btn-info' to={`/course/${course.id}`}>See more</Link>
-                            </div>
-                        )
-                    })}
-                </div>
-            </div>
-        )
     }
 }
 
