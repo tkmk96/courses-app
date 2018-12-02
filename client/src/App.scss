@@ -40,8 +40,6 @@
       align-self: flex-end;
     }
   }
-
-
 }
 
 .myCourses {
@@ -58,4 +56,10 @@
 
 .mb20 {
   margin-bottom: 20px;
+}
+
+.loginForm {
+  .rightBtn {
+    float: right;
+  }
 }

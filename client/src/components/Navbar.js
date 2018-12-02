@@ -47,7 +47,7 @@ class Navbar extends Component {
                             <li className={pathname === '/my-courses' ? 'active' : ''}><Link to='/my-courses'>My courses</Link></li>
                         </ul>
                         <ul className='nav navbar-nav navbar-right'>
-                            <li><Link to='/logout'>Logout</Link></li>
+                            <li><Link to='/login'>Login</Link></li>
                         </ul>
                     </div>
                 </div>

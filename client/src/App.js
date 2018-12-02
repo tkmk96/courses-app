@@ -7,6 +7,8 @@ import Navbar from './components/Navbar';
 import {BrowserRouter, Route} from 'react-router-dom';
 import MyCourses from './components/MyCourses';
 import CourseDetail from './components/CourseDetail';
+import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm';
 
 class App extends Component {
     render() {
@@ -19,6 +21,8 @@ class App extends Component {
                             <Route path='/trending' component={Trending} />
                             <Route path='/my-courses' component={MyCourses} />
                             <Route path='/course/:id' component={CourseDetail} />
+                            <Route path='/login' component={LoginForm} />
+                            <Route path='/register' component={RegisterForm} />
                         </div>
                     </div>
                 </Fragment>
