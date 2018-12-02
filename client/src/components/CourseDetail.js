@@ -42,7 +42,7 @@ class CourseDetail extends Component {
                     <span className='count'>({course.ratingsCount} ratings)</span>
                 </div>
                 <h4 className='header'>{course.description}</h4>
-                <button className='btn btn-lg btn-warning'>Buy for {course.price} $</button>
+                <button className='btn btn-lg btn-warning'>Buy for {course.price} €</button>
                 {this.renderSimilarCourses()}
             </div>
         );

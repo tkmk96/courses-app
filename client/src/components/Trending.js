@@ -1,18 +1,13 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {fetchTrending} from '../store/actions/index';
 
 class Trending extends Component {
 
-    state = {
-        courses: []
-    };
-
     componentDidMount() {
-        axios.get('/course').then(res => {
-            const courses = res.data;
-            this.setState({courses: courses.slice(0, 10)});
-        });
+        this.props.fetchTrending();
     }
 
     render() {
@@ -25,7 +20,7 @@ class Trending extends Component {
     }
 
     renderCoursesList() {
-        return this.state.courses.map((course) => {
+        return this.props.trending.map((course) => {
             return (
                 <li key={course.id} className='course'>
                     <h3>{course.name}</h3>
@@ -42,4 +37,6 @@ class Trending extends Component {
     }
 }
 
-export default Trending;
+const mapStateToProps = ({trending}) => ({trending});
+
+export default connect(mapStateToProps, {fetchTrending})(Trending);
