@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import StarRatings from 'react-star-ratings';
 import {Link} from 'react-router-dom';
 
@@ -6,7 +6,7 @@ const SimilarCourses = (props) => {
     return (
         <div className='recommend'>
             <h2 className='mb20 text-center'>Similar courses</h2>
-            <div>
+            <div className='courses'>
                 {props.courses.map(course => {
                     return (
                         <div key={course.id} className='course col-sm-3'>

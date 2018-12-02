@@ -28,11 +28,20 @@
 .recommend {
   margin-top: 120px;
 
-  .course {
-    //margin-right: 30px;
-    text-align: center;
-    margin-bottom: 50px;
+  .courses {
+    display: flex;
+    height: 100%;
+
+    .course {
+      //margin-right: 30px;
+      text-align: center;
+      margin-bottom: 50px;
+      display: inline-block;
+      align-self: flex-end;
+    }
   }
+
+
 }
 
 .myCourses {

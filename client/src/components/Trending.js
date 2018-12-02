@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-import axios from 'axios';
-import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {fetchTrending} from '../store/actions/index';
 import CourseInfo from './CourseInfo';

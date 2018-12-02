@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import {fetchMyCourses} from '../store/actions/index';
 import {connect} from 'react-redux';
 import CourseInfo from './CourseInfo';

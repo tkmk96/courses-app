@@ -1,7 +1,6 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import StarRatings from 'react-star-ratings';
 import axios from 'axios';
-import {Link} from 'react-router-dom';
 import SimilarCourses from './SimilarCourses';
 
 const course = {
