@@ -11,11 +11,10 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    users = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Course
-        fields = ('id', 'category', 'name', 'description', 'price', 'users')
+        fields = ('id', 'category', 'name', 'description', 'price', 'rating', 'ratingsCount')
 
 
 class UserSerializer(serializers.ModelSerializer):

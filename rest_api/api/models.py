@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.db.models import Avg, Count
 
 # Category has name and courses
 class Category(models.Model):
@@ -13,6 +13,17 @@ class Course(models.Model):
     description = models.CharField(max_length=1024)
     price = models.DecimalField(max_digits=5, decimal_places=2)
 
+    @property
+    def rating(self):
+        aggregate = CourseUser.objects.filter(course__id=self.id).aggregate(Avg('rating'))
+        if aggregate['rating__avg'] is None:
+            return 0
+        return round(aggregate['rating__avg'], 1)
+
+    @property
+    def ratingsCount(self):
+        aggregate = CourseUser.objects.filter(course__id=self.id).aggregate(Count('rating'))
+        return aggregate['rating__count']
 
 # User has UNIQUE name
 class User(models.Model):
