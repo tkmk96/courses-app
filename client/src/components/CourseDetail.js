@@ -22,7 +22,7 @@ class CourseDetail extends Component {
     };
 
     componentDidMount() {
-        axios.get('/course').then(({data}) => {
+        axios.get('/course/').then(({data}) => {
             this.setState({similarCourses: data.slice(0, 4)});
         })
     }
