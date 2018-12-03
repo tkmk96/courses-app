@@ -3,31 +3,38 @@ import StarRatings from 'react-star-ratings';
 import axios from 'axios';
 import SimilarCourses from './SimilarCourses';
 
-const course = {
-    category: 1,
-    description: "The only course you need to learn web development - HTML, CSS, JS, Node, and More!",
-    id: 1,
-    name: "The Web Developer Bootcamp",
-    price: "11.99",
-    users: [136, 297, 503, 601, 816, 945, 1060, 1277, 1383, 1632, 1847, 1955, 2179, 2214, 2525, 2673, 2823, 2969],
-    rating: 4.3,
-    ratingsCount: 15800
-};
-
-
 class CourseDetail extends Component {
 
     state = {
-        similarCourses: []
+        similarCourses: [],
+        course: null
     };
 
+    componentWillReceiveProps(nextProps) {
+        const {id} = nextProps.match.params;
+        if (id !== this.props.match.params.id) {
+            this.getCourse(id);
+        }
+    }
+
     componentDidMount() {
+        const {id} = this.props.match.params;
+        this.getCourse(id);
         axios.get('/course/').then(({data}) => {
             this.setState({similarCourses: data.slice(0, 4)});
         })
     }
 
+    getCourse = async (id) => {
+      const res = await axios.get(`/course/${id}/`);
+      this.setState({course: res.data});
+    };
+
     render() {
+        const {course} = this.state;
+        if (course === null) {
+            return null;
+        }
         return(
             <div className='courseDetail col-sm-12'>
                 <h2 className='header'>{course.name}</h2>

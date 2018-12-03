@@ -3,7 +3,6 @@ from rest_framework import serializers
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    users = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Course

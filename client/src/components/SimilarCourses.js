@@ -20,7 +20,7 @@ const SimilarCourses = (props) => {
                                     starSpacing='3px'
                                 />
                             </div>
-                            <Link className='btn btn-success' to={`/course/${course.id}`}>See more</Link>
+                            <Link className='btn btn-success' to={`/course-detail/${course.id}`}>See more</Link>
                         </div>
                     )
                 })}
