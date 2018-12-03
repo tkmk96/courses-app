@@ -9,7 +9,7 @@ class Category(models.Model):
 # Each Course belongs to 1 Category
 class Course(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='courses')
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, unique=True)
     description = models.CharField(max_length=1024)
     price = models.DecimalField(max_digits=5, decimal_places=2)
 
@@ -27,7 +27,7 @@ class CourseUser(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='users')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
     date = models.DateField(auto_now_add=True)
-    rating = models.FloatField(null=True, blank=True)
+    rating = models.IntegerField(null=True, blank=True)
 
     class Meta:
         unique_together = ('course', 'user')
