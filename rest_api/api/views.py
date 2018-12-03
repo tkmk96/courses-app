@@ -1,13 +1,6 @@
-from .models import Category, Course, User, CourseUser, RecommendationPeopleBuy, RecommendationSimilarCourse, RecommendationForUser
+from .models import Course, User, CourseUser, RecommendationPeopleBuy, RecommendationSimilarCourse, RecommendationForUser
 from rest_framework import viewsets
-from .serializers import CategorySerializer, CourseSerializer, UserSerializer
-
-# Create your views here.
-
-
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all().order_by('-name')
-    serializer_class = CategorySerializer
+from .serializers import CourseSerializer, UserSerializer
 
 
 class CourseViewSet(viewsets.ModelViewSet):

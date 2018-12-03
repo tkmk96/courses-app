@@ -1,17 +1,13 @@
 from django.db import models
 from django.db.models import Avg, Count
 
-# Category has name and courses
-class Category(models.Model):
-    name = models.CharField(max_length=128)
-
-
-# Each Course belongs to 1 Category
+# Course has unique name
 class Course(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='courses')
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, unique=True)
     description = models.CharField(max_length=1024)
     price = models.DecimalField(max_digits=5, decimal_places=2)
+    lectures = models.IntegerField()
+    difficulty = models.CharField(max_length=128)
 
     @property
     def rating(self):
@@ -45,7 +41,6 @@ class CourseUser(models.Model):
 
 
 # Recommending based on similarity in description and name
-# Recommended courses need to be in the same category
 class RecommendationSimilarCourse(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='rec_similar')
     recommended_course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_offered')
