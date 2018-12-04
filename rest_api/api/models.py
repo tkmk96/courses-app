@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Avg, Count
+import datetime
 
 # Course has unique name
 class Course(models.Model):
@@ -38,7 +39,8 @@ class CourseUser(models.Model):
 
     @property
     def ratingsCount(self):
-        count = CourseUser.objects.filter(course=self.course).count()
+        ThirtyDaysAgo = datetime.datetime.now() - datetime.timedelta(days=30)
+        count = CourseUser.objects.filter(date__gte=ThirtyDaysAgo).filter(course=self.course).count()
         return count
 
     class Meta:

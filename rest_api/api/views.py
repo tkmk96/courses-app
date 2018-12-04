@@ -6,7 +6,7 @@ from .models import Course, User, CourseUser
 from .serializers import CourseSerializer, UserSerializer, CourseUserSerializer
 import datetime
 from django.db.models import Count
-from django.db.models import Q
+
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -30,9 +30,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class TrendingViewSet(viewsets.ModelViewSet): #9549
-    ThirtyDaysAgo = datetime.datetime.now() - datetime.timedelta(days=7)
-    #queryset = CourseUser.objects.filter(date__gte=ThirtyDaysAgo).annotate(count=Count('course', filter=Q(course=9549))).order_by('-count')[:10]
-    queryset = CourseUser.objects.filter(date__gte=ThirtyDaysAgo).annotate(count=Count('course')).order_by('-count')[:10]
+    ThirtyDaysAgo = datetime.datetime.now() - datetime.timedelta(days=30)
+    queryset = sorted(CourseUser.objects.filter(date__gte=ThirtyDaysAgo)[:30], key=lambda t: t.ratingsCount, reverse=True)
 
     serializer_class = CourseUserSerializer
 
