@@ -22,6 +22,7 @@ from api import views
 router = routers.DefaultRouter()
 router.register(r'course', views.CourseViewSet, base_name='course')
 router.register(r'user', views.UserViewSet)
+router.register(r'trending', views.TrendingViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

@@ -6,8 +6,8 @@ class Course(models.Model):
     name = models.CharField(max_length=256, unique=True)
     description = models.CharField(max_length=1024)
     price = models.DecimalField(max_digits=5, decimal_places=2)
-    lectures = models.IntegerField()
-    difficulty = models.CharField(max_length=128)
+    #lectures = models.IntegerField()
+    #difficulty = models.CharField(max_length=128)
 
     @property
     def rating(self):

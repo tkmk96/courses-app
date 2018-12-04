@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.response import Response
+import datetime
 
 from .models import Course, User
 from .serializers import CourseSerializer, UserSerializer
@@ -24,3 +25,6 @@ class CourseViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-name')
     serializer_class = UserSerializer
+
+class TrendingViewSet(viewsets.ModelViewSet):
+    time_24_hours_ago = datetime.datetime.now() - datetime.timedelta(days=1)
