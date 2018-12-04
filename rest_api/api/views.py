@@ -2,8 +2,10 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from .models import Course, User
-from .serializers import CourseSerializer, UserSerializer
+from .models import Course, User, CourseUser
+from .serializers import CourseSerializer, UserSerializer, CourseUserSerializer
+import datetime
+from django.db.models import Count
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -24,3 +26,9 @@ class CourseViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-name')
     serializer_class = UserSerializer
+
+class TrendingViewSet(viewsets.ModelViewSet):
+    ThirtyDaysAgo = datetime.datetime.now() - datetime.timedelta(days=30)
+    queryset = CourseUser.objects.filter(date__gte=ThirtyDaysAgo).annotate(total=Count('course')).order_by('total')[:10]
+    serializer_class = CourseUserSerializer
+
