@@ -36,6 +36,11 @@ class CourseUser(models.Model):
     date = models.DateField(auto_now_add=True)
     rating = models.FloatField(null=True, blank=True)
 
+    @property
+    def ratingsCount(self):
+        count = CourseUser.objects.filter(course=self.course).count()
+        return count
+
     class Meta:
         unique_together = ('course', 'user')
 
