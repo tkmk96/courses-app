@@ -28,10 +28,11 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-name')
     serializer_class = UserSerializer
 
+'''
 class TrendingViewSet(viewsets.ModelViewSet): #9549
     ThirtyDaysAgo = datetime.datetime.now() - datetime.timedelta(days=7)
     #queryset = CourseUser.objects.filter(date__gte=ThirtyDaysAgo).annotate(count=Count('course', filter=Q(course=9549))).order_by('-count')[:10]
     queryset = CourseUser.objects.filter(date__gte=ThirtyDaysAgo).annotate(count=Count('course')).order_by('-count')[:10]
 
     serializer_class = CourseUserSerializer
-
+'''
