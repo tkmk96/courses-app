@@ -20,8 +20,7 @@ from rest_framework import routers
 from api import views
 
 router = routers.DefaultRouter()
-router.register(r'category', views.CategoryViewSet)
-router.register(r'course', views.CourseViewSet)
+router.register(r'course', views.CourseViewSet, base_name='course')
 router.register(r'user', views.UserViewSet)
 
 urlpatterns = [

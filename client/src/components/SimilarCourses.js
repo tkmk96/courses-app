@@ -13,14 +13,14 @@ const SimilarCourses = (props) => {
                             <h5 className='mb20'>{course.name}</h5>
                             <div className='mb20'>
                                 <StarRatings
-                                    rating={3.5}
+                                    rating={course.rating}
                                     starRatedColor="#419641"
                                     numberOfStars={5}
                                     starDimension='15px'
                                     starSpacing='3px'
                                 />
                             </div>
-                            <Link className='btn btn-success' to={`/course/${course.id}`}>See more</Link>
+                            <Link className='btn btn-success' to={`/course-detail/${course.id}`}>See more</Link>
                         </div>
                     )
                 })}

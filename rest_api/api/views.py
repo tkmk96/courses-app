@@ -1,18 +1,24 @@
-from .models import Category, Course, User, CourseUser, RecommendationPeopleBuy, RecommendationSimilarCourse, RecommendationForUser
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
-from .serializers import CategorySerializer, CourseSerializer, UserSerializer
+from rest_framework.response import Response
 
-# Create your views here.
-
-
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all().order_by('-name')
-    serializer_class = CategorySerializer
+from .models import Course, User
+from .serializers import CourseSerializer, UserSerializer
 
 
 class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all().order_by('-name')
-    serializer_class = CourseSerializer
+
+    def list(self, request):
+        queryset = Course.objects.all()[:10]
+        serializer = CourseSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+    def retrieve(self, request, pk=None):
+        queryset = Course.objects.all()
+        course = get_object_or_404(queryset, id=pk)
+        serializer = CourseSerializer(course)
+        return Response(serializer.data)
 
 
 class UserViewSet(viewsets.ModelViewSet):

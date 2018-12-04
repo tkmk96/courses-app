@@ -1,18 +1,25 @@
 from django.db import models
+from django.db.models import Avg, Count
 
-
-# Category has name and courses
-class Category(models.Model):
-    name = models.CharField(max_length=128)
-
-
-# Each Course belongs to 1 Category
+# Course has unique name
 class Course(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='courses')
     name = models.CharField(max_length=256, unique=True)
     description = models.CharField(max_length=1024)
     price = models.DecimalField(max_digits=5, decimal_places=2)
+    lectures = models.IntegerField()
+    difficulty = models.CharField(max_length=128)
 
+    @property
+    def rating(self):
+        aggregate = CourseUser.objects.filter(course__id=self.id).aggregate(Avg('rating'))
+        if aggregate['rating__avg'] is None:
+            return 0
+        return round(aggregate['rating__avg'], 1)
+
+    @property
+    def ratingsCount(self):
+        aggregate = CourseUser.objects.filter(course__id=self.id).aggregate(Count('rating'))
+        return aggregate['rating__count']
 
 # User has UNIQUE name
 class User(models.Model):
@@ -27,14 +34,13 @@ class CourseUser(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='users')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
     date = models.DateField(auto_now_add=True)
-    rating = models.IntegerField(null=True, blank=True)
+    rating = models.FloatField(null=True, blank=True)
 
     class Meta:
         unique_together = ('course', 'user')
 
 
 # Recommending based on similarity in description and name
-# Recommended courses need to be in the same category
 class RecommendationSimilarCourse(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='rec_similar')
     recommended_course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_offered')

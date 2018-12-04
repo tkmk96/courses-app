@@ -20,7 +20,7 @@ class App extends Component {
                         <div className="row">
                             <Route path='/trending' component={Trending} />
                             <Route path='/my-courses' component={MyCourses} />
-                            <Route path='/course/:id' component={CourseDetail} />
+                            <Route path='/course-detail/:id' component={CourseDetail} />
                             <Route path='/login' component={LoginForm} />
                             <Route path='/register' component={RegisterForm} />
                         </div>

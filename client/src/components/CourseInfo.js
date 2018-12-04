@@ -8,7 +8,7 @@ const CourseInfo = (props) => {
             <p>{props.description}</p>
             <Link
                 className='btn btn-info'
-                to={'/course/' + props.id}
+                to={'/course-detail/' + props.id}
             >
                 See more
             </Link>
