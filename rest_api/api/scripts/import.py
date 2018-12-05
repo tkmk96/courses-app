@@ -31,7 +31,7 @@ def get_random_date(start, end):
     end_time = time.mktime(time.strptime(end, time_format))
     random_time = start_time + random.random() * (end_time - start_time)
 
-    return time.strftime(time_format, time.localtime(random_time))
+    return random_time.as_integer_ratio()[0]
 
 
 def get_users_dict():
