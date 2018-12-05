@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Avg, Count
 import datetime
 
+
 # Course has unique name
 class Course(models.Model):
     name = models.CharField(max_length=256, unique=True)
@@ -22,9 +23,14 @@ class Course(models.Model):
         aggregate = CourseUser.objects.filter(course__id=self.id).aggregate(Count('rating'))
         return aggregate['rating__count']
 
+
 # User has UNIQUE name
 class User(models.Model):
     name = models.CharField(max_length=128, unique=True)
+
+
+class KeyWord(models.Model):
+    word = models.CharField(max_length=64, unique=True)
 
 
 # M : N relationship
@@ -47,6 +53,14 @@ class CourseUser(models.Model):
         unique_together = ('course', 'user')
 
 
+class CourseKeyword(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='keywords')
+    keyword = models.ForeignKey(KeyWord, on_delete=models.CASCADE, related_name='kw_courses')
+
+    class Meta:
+        unique_together = ('course', 'keyword')
+
+
 # Recommending based on similarity in description and name
 class RecommendationSimilarCourse(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='rec_similar')
@@ -58,8 +72,8 @@ class RecommendationSimilarCourse(models.Model):
 # For every user who bought certain course - counts occurrences of courses: (is there = +1)
 # top X courses are selected
 class RecommendationPeopleBuy(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='rec_bought')
-    recommended_course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_offered2')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='recommendBuy')
+    recommended_course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='rec_course')
     number = models.IntegerField()
 
 
@@ -72,4 +86,7 @@ class RecommendationForUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recommendations')
     recommended_course = models.ForeignKey(Course, on_delete=models.CASCADE)
     number = models.IntegerField()
+
+
+
 

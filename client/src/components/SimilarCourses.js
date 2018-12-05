@@ -3,13 +3,16 @@ import StarRatings from 'react-star-ratings';
 import {Link} from 'react-router-dom';
 
 const SimilarCourses = (props) => {
+    if (props.courses.length === 0) {
+        return null;
+    }
     return (
         <div className='recommend'>
-            <h2 className='mb20 text-center'>Similar courses</h2>
+            <h2 className='mb20 text-center'>{props.header}</h2>
             <div className='courses'>
                 {props.courses.map(course => {
                     return (
-                        <div key={course.id} className='course col-sm-3'>
+                        <div key={course.id} className='course col-sm-4'>
                             <h5 className='mb20'>{course.name}</h5>
                             <div className='mb20'>
                                 <StarRatings

@@ -13,21 +13,25 @@ class CourseDetail extends Component {
     componentWillReceiveProps(nextProps) {
         const {id} = nextProps.match.params;
         if (id !== this.props.match.params.id) {
-            this.getCourse(id);
+            this.getData(id);
         }
     }
 
     componentDidMount() {
         const {id} = this.props.match.params;
-        this.getCourse(id);
-        axios.get('/course/').then(({data}) => {
-            this.setState({similarCourses: data.slice(0, 4)});
-        })
+        this.getData(id);
     }
 
-    getCourse = async (id) => {
-      const res = await axios.get(`/course/${id}/`);
-      this.setState({course: res.data});
+    getData = async (id) => {
+        const res = await axios.get(`/course/${id}/`);
+        this.setState({course: res.data});
+        const courses = res.data.recommendBuy.slice(0, 3);
+        courses.forEach(async r => {
+            const res = await axios.get(`/course/${r.recommended_course}/`);
+            const {id, rating, name} = res.data;
+            this.setState(prevState => ({similarCourses: [...prevState.similarCourses, {id, rating, name}]}));
+        });
+
     };
 
     render() {
@@ -38,6 +42,11 @@ class CourseDetail extends Component {
         return(
             <div className='courseDetail col-sm-12'>
                 <h2 className='header'>{course.name}</h2>
+                <h3>
+                    <small>{course.lectures ? course.lectures + ' lectures | ' : '' }
+                        {course.difficulty}
+                    </small>
+                </h3>
                 <div className='ratings'>
                     <StarRatings
                         rating={course.rating}
@@ -50,7 +59,7 @@ class CourseDetail extends Component {
                 </div>
                 <h4 className='header'>{course.description}</h4>
                 <button className='btn btn-lg btn-warning'>Buy for {course.price} €</button>
-                <SimilarCourses courses={this.state.similarCourses}/>
+                <SimilarCourses header='People also bought' courses={this.state.similarCourses}/>
             </div>
         );
     }
