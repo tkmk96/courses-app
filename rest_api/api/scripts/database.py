@@ -64,6 +64,12 @@ class Database:
         self.cursor.execute(query, params)
         return self.cursor.lastrowid
 
+    def insert_rec_for_user(self, user_id, rec_id, number):
+        query = "INSERT INTO api_recommendationforuser(user_id, recommended_course_id, number) VALUES (?, ?, ?)"
+        params = (user_id, rec_id, number)
+        self.cursor.execute(query, params)
+        return self.cursor.lastrowid
+
     # GETS
     # 0course_id 1name 2description 3price 4lectures 5difficulty 6- 7date 8rating 9-0 10user_id
     def get_all_courses_with_users(self):
@@ -137,6 +143,37 @@ class Database:
             }
         return result
 
+    def get_all_users(self):
+        query = "SELECT u.id, a.course_id FROM api_user u INNER JOIN api_courseuser a on u.id = a.user_id"
+        self.cursor.execute(query)
+        rows = self.cursor.fetchall()
+        result = dict()
+        for row in rows:
+            if result.get(row[0]) is None:
+                result[row[0]] = []
+            result[row[0]].append(row[1])
+        return result
+
+    def get_course_users(self, course_id):
+        query = "SELECT cu.user_id FROM api_course c INNER JOIN api_courseuser cu on c.id = cu.course_id WHERE c.id = ?"
+        params = (course_id, )
+        self.cursor.execute(query, params)
+        rows = self.cursor.fetchall()
+        result = []
+        for row in rows:
+            result.append(row[0])
+        return result
+
+    def get_user_courses(self, user_id):
+        query = "SELECT cu.course_id FROM api_user u INNER JOIN api_courseuser cu on u.id = cu.user_id WHERE u.id = ?"
+        params = (user_id,)
+        self.cursor.execute(query, params)
+        rows = self.cursor.fetchall()
+        result = []
+        for row in rows:
+            result.append(row[0])
+        return result
+
     def get_keywords(self):
         query = "SELECT word FROM api_keyword"
         self.cursor.execute(query)
@@ -175,6 +212,10 @@ class Database:
         query = "DELETE FROM api_recommendationsimilarcourse"
         self.cursor.execute(query)
 
+    def delete_rec_for_user(self):
+        query = "DELETE FROM api_recommendationforuser"
+        self.cursor.execute(query)
+
     def delete_all(self):
         self.delete_course_users()
         self.delete_course_keywords()
@@ -183,3 +224,4 @@ class Database:
         self.delete_keywords()
         self.delete_rec_people_buy()
         self.delete_rec_similar()
+        self.delete_rec_for_user()

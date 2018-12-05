@@ -1,39 +1,18 @@
 from sys import argv
 # noinspection PyUnresolvedReferences
 from database import Database
-import csv
+
+# INSTRUCTIONS
+# to run script: py ./recmake.py ../../db.sqlite3 [1 | 2 | 3 | 0]
 
 ALL = 0
 PEOPLE_BUY = 1
 SIMILAR = 2
+FOR_USER = 3
 
 
-def write_key_words_csv(db):
-    with open('KeyWords.csv', 'w', newline='', encoding='utf8') as file:
-        fieldnames = ['keyword']
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
-        writer.writeheader()
-        words = db.get_keywords()
-        for w in words:
-            writer.writerow({'keyword': w})
-
-
-def get_word_count(courses):
-    keywords = {}
-    for _, course in courses.items():
-        names = course['name'].split()
-        for n in names:
-            if len(n) < 3:
-                continue
-            if keywords.get(n) is None:
-                keywords[n] = 0
-            keywords[n] += 1
-    for key in list(keywords.keys()):
-        if keywords[key] < 2:
-            del keywords[key]
-            continue
-    sorted_keywords = sorted(keywords.items(), key=lambda k: k[1], reverse=True)
-    return sorted_keywords
+def get_progress(current, total):
+    return str(current) + ' / ' + str(total)
 
 
 def similar_courses(db):
@@ -99,11 +78,47 @@ def people_buy(db):
     print('People buy - skipped courses: ' + str(skipped) + ' / ' + str(len(courses_users.keys())))
 
 
+def for_user(db):
+    db.delete_rec_for_user()
+    users = db.get_all_users()
+    skipped = 0
+    current = 1
+    total = len(users.keys())
+    for user_id, courses in users.items():
+        other = dict()
+        for course_id in courses:
+            c_users = db.get_course_users(course_id)
+            for u in c_users:
+                uc = db.get_user_courses(u)
+                for cid in uc:
+                    if other.get(cid) is None:
+                        other[cid] = 1
+                    else:
+                        other[cid] += 1
+        if len(other.keys()) < 1:
+            skipped += 1
+            continue
+        result = sorted(other.items(), key=lambda k: k[1], reverse=True)
+        result = result[:3]
+        for index, rec in enumerate(result):
+            db.insert_rec_for_user(user_id, rec[0], index)
+        print("For users: " + get_progress(current, total), end='\r')
+        current += 1
+    db.commit()
+    print('For user - skipped users: ' + str(skipped) + ' / ' + str(total))
+
+
 def process_mode(db, mode):
     if mode == PEOPLE_BUY:
         people_buy(db)
     elif mode == SIMILAR:
         similar_courses(db)
+    elif mode == FOR_USER:
+        for_user(db)
+    elif mode == ALL:
+        people_buy(db)
+        similar_courses(db)
+        for_user(db)
 
 
 def main():
@@ -120,3 +135,30 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# def write_key_words_csv(db):
+#     with open('KeyWords.csv', 'w', newline='', encoding='utf8') as file:
+#         fieldnames = ['keyword']
+#         writer = csv.DictWriter(file, fieldnames=fieldnames)
+#         writer.writeheader()
+#         words = db.get_keywords()
+#         for w in words:
+#             writer.writerow({'keyword': w})
+#
+#
+# def get_word_count(courses):
+#     keywords = {}
+#     for _, course in courses.items():
+#         names = course['name'].split()
+#         for n in names:
+#             if len(n) < 3:
+#                 continue
+#             if keywords.get(n) is None:
+#                 keywords[n] = 0
+#             keywords[n] += 1
+#     for key in list(keywords.keys()):
+#         if keywords[key] < 2:
+#             del keywords[key]
+#             continue
+#     sorted_keywords = sorted(keywords.items(), key=lambda k: k[1], reverse=True)
+#     return sorted_keywords
