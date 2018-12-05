@@ -3,61 +3,46 @@ import StarRatings from 'react-star-ratings';
 import axios from 'axios';
 import SimilarCourses from './SimilarCourses';
 import {USER_ID} from '../constants/constants';
+import {
+    buyCourse, fetchCourse, fetchMyCourses, fetchSimilarCourses, rateCourse,
+    resetSimilarCourses
+} from '../store/actions/index';
+import {connect} from 'react-redux';
 
 class CourseDetail extends Component {
 
-    state = {
-        similarCourses: [],
-        course: null
-    };
+    componentDidMount() {
+        this.props.resetSimilarCourses();
+        this.props.fetchMyCourses();
+        const {id} = this.props.match.params;
+        this.props.fetchCourse(id);
+    }
 
     componentWillReceiveProps(nextProps) {
         const {id} = nextProps.match.params;
         if (id !== this.props.match.params.id) {
-            this.getData(id);
-            this.setState({similarCourses: []});
+            this.props.fetchCourse(id);
+            this.props.resetSimilarCourses();
         }
     }
 
-    componentDidMount() {
-        const {id} = this.props.match.params;
-        this.getData(id);
-    }
-
-    getData = async (id) => {
-        const res = await axios.get(`/course/${id}/`);
-        this.setState({course: res.data});
-        const courses = res.data.recommendBuy.slice(0, 2);
-        courses.forEach(async r => {
-            const res = await axios.get(`/course/${r.recommended_course}/`);
-            const {id, rating, name} = res.data;
-            this.setState(prevState => ({similarCourses: [...prevState.similarCourses, {id, rating, name}]}));
-        });
-        const similarCourses = res.data.recommendSimilar.slice(0, 2);
-        similarCourses.forEach(async r => {
-            const res = await axios.get(`/course/${r.recommended_course}/`);
-            const {id, rating, name} = res.data;
-            this.setState(prevState => ({similarCourses: [...prevState.similarCourses, {id, rating, name}]}));
-        });
+    buy = courseId => {
+        this.props.buyCourse(courseId);
+        this.props.fetchMyCourses();
     };
 
-    buy = async courseId => {
-        const formData = new FormData();
-        formData.set('course', courseId);
-        formData.set('user', USER_ID);
-        const res = await axios({
-            method: 'post',
-            url: '/buy/',
-            data: formData,
-            config: { headers: {'Content-Type': 'multipart/form-data' }}
-        });
+    rate = (rating, course) => {
+        const courseUser = this.props.myCourses.find(c => c.id === course).courseUser;
+        this.props.rateCourse(rating, course, courseUser);
     };
 
     render() {
-        const {course} = this.state;
+        const {courseDetail: course} = this.props;
         if (course === null) {
             return null;
         }
+        const canBuy = this.props.myCourses.find(c => course.id === c.id) === undefined;
+        const rating = canBuy ? null : this.props.myCourses.find(c => course.id === c.id).rating;
         return(
             <div className='courseDetail col-sm-12'>
                 <h2 className='header'>{course.name}</h2>
@@ -77,16 +62,41 @@ class CourseDetail extends Component {
                     <span className='count'>({course.ratingsCount} ratings)</span>
                 </div>
                 <h4 className='header'>{course.description}</h4>
-                <button
-                    className='btn btn-lg btn-warning'
-                    onClick={() => this.buy(course.id)}
-                >
-                    Buy for {course.price} €
-                </button>
-                <SimilarCourses header='People also bought' courses={this.state.similarCourses}/>
+                {canBuy ?
+                    <button
+                        className='btn btn-lg btn-warning'
+                        onClick={() => this.buy(course.id)}
+                    >
+                        Buy for {course.price} €
+                    </button>
+                    :
+
+                    <div>
+                        <h5>Your rating:</h5>
+                        {rating === null ?
+                            <StarRatings
+                                starRatedColor="#f6f60d"
+                                numberOfStars={5}
+                                starDimension='30px'
+                                starSpacing='5px'
+                                changeRating={(rating) => this.rate(rating, course.id)}
+                            /> :
+                            <StarRatings
+                                rating={rating}
+                                starRatedColor="#f6f60d"
+                                numberOfStars={5}
+                                starDimension='30px'
+                                starSpacing='5px'
+                            />
+                        }
+                    </div>
+                }
+                <SimilarCourses header='People also bought' courses={this.props.similarCourses}/>
             </div>
         );
     }
 }
 
-export default CourseDetail;
+const mapStateToProps = ({myCourses, similarCourses, courseDetail}) => ({myCourses, similarCourses, courseDetail});
+
+export default connect(mapStateToProps, {fetchMyCourses, resetSimilarCourses, fetchCourse, buyCourse, rateCourse})(CourseDetail);
