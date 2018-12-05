@@ -2,12 +2,20 @@ from .models import Course, User, CourseUser, RecommendationPeopleBuy, Recommend
 from rest_framework import serializers
 
 
-class CourseSerializer(serializers.ModelSerializer):
 
+class RecommendationPeopleBuySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RecommendationPeopleBuy
+        fields = ('recommended_course',)
+
+
+class CourseSerializer(serializers.ModelSerializer):
+    recommendBuy = RecommendationPeopleBuySerializer(many=True, read_only=True)
     class Meta:
         model = Course
         fields = ('id', 'name', 'description', 'price', 'rating', 'ratingsCount',
-                  'lectures', 'difficulty')
+                  'lectures', 'difficulty', 'recommendBuy')
 
 
 class UserSerializer(serializers.ModelSerializer):

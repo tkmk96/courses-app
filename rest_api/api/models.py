@@ -53,8 +53,8 @@ class RecommendationSimilarCourse(models.Model):
 # For every user who bought certain course - counts occurrences of courses: (is there = +1)
 # top X courses are selected
 class RecommendationPeopleBuy(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='rec_bought')
-    recommended_course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_offered2')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='recommendBuy')
+    recommended_course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='rec_course')
     number = models.IntegerField()
 
 
