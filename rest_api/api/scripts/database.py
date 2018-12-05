@@ -58,6 +58,12 @@ class Database:
         self.cursor.execute(query, params)
         return self.cursor.lastrowid
 
+    def insert_rec_similar_courses(self, course_id, rec_id, number):
+        query = "INSERT INTO api_recommendationsimilarcourse(course_id, recommended_course_id, number) VALUES (?, ?, ?)"
+        params = (course_id, rec_id, number)
+        self.cursor.execute(query, params)
+        return self.cursor.lastrowid
+
     # GETS
     # 0course_id 1name 2description 3price 4lectures 5difficulty 6- 7date 8rating 9-0 10user_id
     def get_all_courses_with_users(self):
@@ -91,6 +97,29 @@ class Database:
         result = []
         for row in rows:
             result.append(row[0])
+        return result
+
+    def get_similar_courses(self, course_id):
+        query = """SELECT course_id, keyword_id, name, description, price, difficulty, lectures FROM
+                  (SELECT course_id, keyword_id FROM api_coursekeyword WHERE course_id != ? AND keyword_id IN
+                          (SELECT keyword_id FROM api_coursekeyword WHERE course_id = ?))
+                   INNER JOIN api_course on id = course_id
+        """.strip()
+        params = (course_id, course_id)
+        self.cursor.execute(query, params)
+        rows = self.cursor.fetchall()
+        result = {}
+        for row in rows:
+            if result.get(row[0]) is None:
+                result[row[0]] = {
+                    'name': row[2],
+                    'description': row[3],
+                    'price': row[4],
+                    'lectures': row[6],
+                    'difficulty': row[5],
+                    'match': 0
+                }
+            result[row[0]]['match'] += 1
         return result
 
     def get_all_courses(self):
