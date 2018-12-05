@@ -4,10 +4,14 @@ import {USER_ID} from '../../constants/constants';
 
 export const fetchTrending = () => {
     return async dispatch => {
-        const res = await axios.get('/course/');
+        const res = await axios.get('/trending/');
+        const courses = [];
+        res.data.forEach(({course, name, description}) => {
+            courses.push({id: course, name, description})
+        });
         dispatch({
             type: FETCHED_TRENDING,
-            payload: res.data
+            payload: courses
         });
     }
 };
