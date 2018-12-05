@@ -46,6 +46,12 @@ class Database:
         self.cursor.execute(query, params)
         return self.cursor.lastrowid
 
+    def insert_course_keyword(self, course_id, keyword_id):
+        query = "INSERT INTO api_coursekeyword(course_id, keyword_id) VALUES (?, ?)"
+        params = (course_id, keyword_id)
+        self.cursor.execute(query, params)
+        return self.cursor.lastrowid
+
     def insert_rec_people_buy(self, course_id, rec_id, number):
         query = "INSERT INTO api_recommendationpeoplebuy(course_id, recommended_course_id, number) VALUES (?, ?, ?)"
         params = (course_id, rec_id, number)
@@ -124,6 +130,10 @@ class Database:
         query = "DELETE FROM api_courseuser"
         self.cursor.execute(query)
 
+    def delete_course_keywords(self):
+        query = "DELETE FROM api_coursekeyword"
+        self.cursor.execute(query)
+
     def delete_keywords(self):
         query = "DELETE FROM api_keyword"
         self.cursor.execute(query)
@@ -138,6 +148,7 @@ class Database:
 
     def delete_all(self):
         self.delete_course_users()
+        self.delete_course_keywords()
         self.delete_users()
         self.delete_courses()
         self.delete_keywords()

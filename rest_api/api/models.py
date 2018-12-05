@@ -28,6 +28,10 @@ class User(models.Model):
     name = models.CharField(max_length=128, unique=True)
 
 
+class KeyWord(models.Model):
+    word = models.CharField(max_length=64, unique=True)
+
+
 # M : N relationship
 # represents ownership of course
 # date is created when entity is saved
@@ -40,6 +44,14 @@ class CourseUser(models.Model):
 
     class Meta:
         unique_together = ('course', 'user')
+
+
+class CourseKeyword(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='keywords')
+    keyword = models.ForeignKey(KeyWord, on_delete=models.CASCADE, related_name='kw_courses')
+
+    class Meta:
+        unique_together = ('course', 'keyword')
 
 
 # Recommending based on similarity in description and name
@@ -69,6 +81,5 @@ class RecommendationForUser(models.Model):
     number = models.IntegerField()
 
 
-class KeyWord(models.Model):
-    word = models.CharField(max_length=64, unique=True)
+
 

@@ -91,8 +91,29 @@ def get_course_users(users, courses):
                 }
             except KeyError:
                 skipped +=1
-        print('Skipped: ' + str(skipped))
+        print('Skipped course_users: ' + str(skipped))
         return data
+
+
+def get_course_keywords(courses, keywords):
+    result = set()
+    skipped = 0
+
+    for name, course in courses.items():
+        names = name.split()
+        skip = True
+        course_id = course['id']
+        for n in names:
+            if len(n) < 3:
+                continue
+            kw_id = keywords.get(n)
+            if kw_id and kw_id != course_id:
+                skip = False
+                result.add((course_id, kw_id))
+        if skip:
+            skipped += 1
+    print('Skipped course_keywords: ' + str(skipped) + ' / ' + str(len(courses)))
+    return result
 
 
 def save_users(db, users):
@@ -141,6 +162,16 @@ def save_keywords(db, keywords):
     return data
 
 
+def save_course_keyword(db, course_keywords):
+    total = len(course_keywords)
+    current = 1
+    for ckw in course_keywords:
+        db.insert_course_keyword(ckw[0], ckw[1])
+        print("Saving course_keywords: " + get_progress(current, total), end='\r')
+        current += 1
+    print("Saving course_keywords finished!")
+
+
 def main():
     if len(argv) < 2:
         print("Path to database need to be passed as the first argument!")
@@ -166,6 +197,10 @@ def main():
     # saving course users
     course_users = get_course_users(users, courses)
     save_course_user(db, course_users)
+
+    # saving course keywords
+    ckws = get_course_keywords(courses, keywords)
+    save_course_keyword(db, ckws)
     db.close()
 
 
