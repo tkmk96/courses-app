@@ -40,6 +40,12 @@ class Database:
         self.cursor.execute(query, params)
         return self.cursor.lastrowid
 
+    def insert_keyword(self, word):
+        query = "INSERT INTO api_keyword(word) VALUES (?)"
+        params = (word,)
+        self.cursor.execute(query, params)
+        return self.cursor.lastrowid
+
     def insert_rec_people_buy(self, course_id, rec_id, number):
         query = "INSERT INTO api_recommendationpeoplebuy(course_id, recommended_course_id, number) VALUES (?, ?, ?)"
         params = (course_id, rec_id, number)
@@ -81,6 +87,30 @@ class Database:
             result.append(row[0])
         return result
 
+    def get_all_courses(self):
+        query = "SELECT * FROM api_course"
+        self.cursor.execute(query)
+        rows = self.cursor.fetchall()
+        result = dict()
+        for row in rows:
+            result[row[0]] = {
+                'name': row[1],
+                'description': row[2],
+                'price': row[3],
+                'lectures': row[4],
+                'difficulty': row[5],
+            }
+        return result
+
+    def get_keywords(self):
+        query = "SELECT word FROM api_keyword"
+        self.cursor.execute(query)
+        rows = self.cursor.fetchall()
+        result = []
+        for row in rows:
+            result.append(row[0])
+        return result
+
     # DELETES
     def delete_users(self):
         query = "DELETE FROM api_user"
@@ -94,7 +124,22 @@ class Database:
         query = "DELETE FROM api_courseuser"
         self.cursor.execute(query)
 
+    def delete_keywords(self):
+        query = "DELETE FROM api_keyword"
+        self.cursor.execute(query)
+
+    def delete_rec_people_buy(self):
+        query = "DELETE FROM api_recommendationpeoplebuy"
+        self.cursor.execute(query)
+
+    def delete_rec_similar(self):
+        query = "DELETE FROM api_recommendationsimilarcourse"
+        self.cursor.execute(query)
+
     def delete_all(self):
         self.delete_course_users()
         self.delete_users()
         self.delete_courses()
+        self.delete_keywords()
+        self.delete_rec_people_buy()
+        self.delete_rec_similar()

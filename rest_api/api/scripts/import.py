@@ -14,6 +14,7 @@ CSV_PATH = '../csv/'
 CSV_USERS = 'Users.csv'
 CSV_COURSE = 'Course.csv'
 CSV_COURSE_USER = 'CourseUser.csv'
+CSV_KEYWORDS = 'KeyWords.csv'
 
 
 def get_csv_path(csv):
@@ -53,9 +54,19 @@ def get_courses_dict():
                 'id': -1,
                 'description': row[1],
                 'price': row[6],
-                'lectures': row[3],
+                'lectures': int(row[3]) if row[3] != '' else 0,
                 'difficulty':row[4],
             }
+        return data
+
+
+def get_keywords():
+    with open(get_csv_path(CSV_KEYWORDS), encoding="utf8") as file:
+        csv = reader(file)
+        next(csv)
+        data = []
+        for row in csv:
+            data.append(row[0])
         return data
 
 
@@ -117,6 +128,19 @@ def save_course_user(db, course_users):
     print("Saving course_users finished!")
 
 
+def save_keywords(db, keywords):
+    total = len(keywords)
+    current = 1
+    skipped = 0
+    data = dict()
+    for kw in keywords:
+        data[kw] = db.insert_keyword(kw)
+        print("Saving keywords: " + get_progress(current, total), end='\r')
+        current += 1
+    print("Saving keywords finished!")
+    return data
+
+
 def main():
     if len(argv) < 2:
         print("Path to database need to be passed as the first argument!")
@@ -127,6 +151,9 @@ def main():
     # clear all tables
     db.delete_all()
     db.commit()
+
+    # saving keywords
+    keywords = save_keywords(db, get_keywords())
 
     # saving users
     users = get_users_dict()

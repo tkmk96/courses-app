@@ -1,12 +1,51 @@
 from sys import argv
 # noinspection PyUnresolvedReferences
 from database import Database
+import csv
 
 ALL = 0
 PEOPLE_BUY = 1
+SIMILAR = 2
+
+
+def write_key_words(db):
+    with open('KeyWords.csv', 'w', newline='', encoding='utf8') as file:
+        fieldnames = ['keyword']
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        words = db.get_keywords()
+        for w in words:
+            writer.writerow({'keyword': w})
+
+
+def get_word_count(courses):
+    keywords = {}
+    for _, course in courses.items():
+        names = course['name'].split()
+        for n in names:
+            if len(n) < 3:
+                continue
+            if keywords.get(n) is None:
+                keywords[n] = 0
+            keywords[n] += 1
+    for key in list(keywords.keys()):
+        if keywords[key] < 2:
+            del keywords[key]
+            continue
+    sorted_keywords = sorted(keywords.items(), key=lambda k: k[1], reverse=True)
+    return sorted_keywords
+
+
+def similar_courses(db):
+    #db.delete_rec_similar()
+    #courses = db.get_all_courses()
+    #words = get_word_count(courses)
+    write_key_words(db)
+
 
 
 def people_buy(db):
+    db.delete_rec_people_buy()
     courses_users = db.get_all_courses_with_users()
     skipped = 0
     # process course
@@ -34,12 +73,14 @@ def people_buy(db):
         for index, rec in enumerate(others_sorted):
             db.insert_rec_people_buy(course_id, rec[0], index)
             db.commit()
-    print('People buy skipped courses: ' + str(skipped) + ' / ' + str(len(courses_users.keys())))
+    print('People buy - skipped courses: ' + str(skipped) + ' / ' + str(len(courses_users.keys())))
 
 
 def process_mode(db, mode):
     if mode == PEOPLE_BUY:
         people_buy(db)
+    elif mode == SIMILAR:
+        similar_courses(db)
 
 
 def main():

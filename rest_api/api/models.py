@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Avg, Count
 
+
 # Course has unique name
 class Course(models.Model):
     name = models.CharField(max_length=256, unique=True)
@@ -20,6 +21,7 @@ class Course(models.Model):
     def ratingsCount(self):
         aggregate = CourseUser.objects.filter(course__id=self.id).aggregate(Count('rating'))
         return aggregate['rating__count']
+
 
 # User has UNIQUE name
 class User(models.Model):
@@ -65,4 +67,8 @@ class RecommendationForUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recommendations')
     recommended_course = models.ForeignKey(Course, on_delete=models.CASCADE)
     number = models.IntegerField()
+
+
+class KeyWord(models.Model):
+    word = models.CharField(max_length=64, unique=True)
 
