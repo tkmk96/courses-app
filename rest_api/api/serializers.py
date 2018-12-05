@@ -2,7 +2,6 @@ from .models import Course, User, CourseUser, RecommendationPeopleBuy, Recommend
 from rest_framework import serializers
 
 
-
 class RecommendationPeopleBuySerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -10,12 +9,20 @@ class RecommendationPeopleBuySerializer(serializers.ModelSerializer):
         fields = ('recommended_course',)
 
 
+class RecommendationSimilarCourseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RecommendationSimilarCourse
+        fields = ('recommended_course',)
+
+
 class CourseSerializer(serializers.ModelSerializer):
     recommendBuy = RecommendationPeopleBuySerializer(many=True, read_only=True)
+    recommendSimilar = RecommendationSimilarCourseSerializer(many=True, read_only=True)
     class Meta:
         model = Course
         fields = ('id', 'name', 'description', 'price', 'rating', 'ratingsCount',
-                  'lectures', 'difficulty', 'recommendBuy')
+                  'lectures', 'difficulty', 'recommendBuy', 'recommendSimilar')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -24,6 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'name', 'courses')
+
 
 class CourseUserSerializer(serializers.ModelSerializer):
 

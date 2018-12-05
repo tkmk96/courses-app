@@ -25,13 +25,18 @@ class CourseDetail extends Component {
     getData = async (id) => {
         const res = await axios.get(`/course/${id}/`);
         this.setState({course: res.data});
-        const courses = res.data.recommendBuy.slice(0, 3);
+        const courses = res.data.recommendBuy.slice(0, 2);
         courses.forEach(async r => {
             const res = await axios.get(`/course/${r.recommended_course}/`);
             const {id, rating, name} = res.data;
             this.setState(prevState => ({similarCourses: [...prevState.similarCourses, {id, rating, name}]}));
         });
-
+        const similarCourses = res.data.recommendSimilar.slice(0, 2);
+        similarCourses.forEach(async r => {
+            const res = await axios.get(`/course/${r.recommended_course}/`);
+            const {id, rating, name} = res.data;
+            this.setState(prevState => ({similarCourses: [...prevState.similarCourses, {id, rating, name}]}));
+        });
     };
 
     render() {

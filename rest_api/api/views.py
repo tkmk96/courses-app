@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from rest_framework.decorators import detail_route, action
 from rest_framework.response import Response
 
 from .models import Course, User, CourseUser
@@ -21,6 +22,12 @@ class CourseViewSet(viewsets.ModelViewSet):
         queryset = Course.objects.all()
         course = get_object_or_404(queryset, id=pk)
         serializer = CourseSerializer(course)
+        return Response(serializer.data)
+
+    @action(methods=['get'], detail=True)
+    def my_courses(self, request, pk):
+        queryset = CourseUser.objects.filter(user_id=pk)
+        serializer = CourseUserSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
