@@ -71,7 +71,7 @@ class CourseKeyword(models.Model):
 
 # Recommending based on similarity in description and name
 class RecommendationSimilarCourse(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='rec_similar')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='recommendSimilar')
     recommended_course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_offered')
     number = models.IntegerField()
 

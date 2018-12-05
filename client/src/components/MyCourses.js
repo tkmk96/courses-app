@@ -15,7 +15,7 @@ class MyCourses extends Component {
             <div className='myCourses col-sm-12'>
                 <h2 className='header'>My bought courses</h2>
                 <ul className='coursesList'>{this.renderCoursesList()}</ul>
-                <SimilarCourses courses={this.props.myCourses}/>
+                <SimilarCourses header='Recommended for you' courses={this.props.myCourses}/>
             </div>
         );
     }

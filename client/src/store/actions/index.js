@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {FETCHED_MY_COURSES, FETCHED_TRENDING} from './types';
+import {USER_ID} from '../../constants/constants';
 
 export const fetchTrending = () => {
     return async dispatch => {
@@ -13,7 +14,7 @@ export const fetchTrending = () => {
 
 export const fetchMyCourses = () => {
     return async dispatch => {
-        const res = await axios.get('/course/');
+        const res = await axios.get(`/course/${USER_ID}/my_courses/`);
         dispatch({
             type: FETCHED_MY_COURSES,
             payload: res.data.slice(0, 4)
