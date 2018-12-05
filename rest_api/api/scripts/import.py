@@ -82,7 +82,7 @@ def get_course_users(users, courses):
                 course_id = courses[row[2]]['id']
                 key = str(user_id) + ':' + str(course_id)
                 rating = row[0]
-                date = get_random_date('2010/01/01 00:01', '2018/10/30 23:59')
+                date = get_random_date('2018/01/01 00:01', '2018/12/4 23:59')
                 data[key] = {
                     'user': user_id,
                     'course': course_id,

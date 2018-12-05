@@ -91,6 +91,8 @@ def for_user(db):
             for u in c_users:
                 uc = db.get_user_courses(u)
                 for cid in uc:
+                    if cid in courses:
+                        continue
                     if other.get(cid) is None:
                         other[cid] = 1
                     else:
