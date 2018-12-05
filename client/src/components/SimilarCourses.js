@@ -16,7 +16,7 @@ const SimilarCourses = (props) => {
                             <h5 className='mb20'>{course.name}</h5>
                             <div className='mb20'>
                                 <StarRatings
-                                    rating={course.rating}
+                                    rating={course.rating || 0}
                                     starRatedColor="#419641"
                                     numberOfStars={5}
                                     starDimension='15px'

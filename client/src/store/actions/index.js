@@ -15,9 +15,13 @@ export const fetchTrending = () => {
 export const fetchMyCourses = () => {
     return async dispatch => {
         const res = await axios.get(`/course/${USER_ID}/my_courses/`);
+        const courses = [];
+        res.data.forEach(({course, name, description}) => {
+            courses.push({id: course, name, description})
+        });
         dispatch({
             type: FETCHED_MY_COURSES,
-            payload: res.data.slice(0, 4)
+            payload: courses.slice(0, 4)
         });
     }
 };

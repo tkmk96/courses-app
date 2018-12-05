@@ -1,4 +1,4 @@
-from .models import Course, User, RecommendationPeopleBuy, RecommendationSimilarCourse, RecommendationForUser, CourseUser
+from .models import Course, User, CourseUser, RecommendationPeopleBuy, RecommendationSimilarCourse, RecommendationForUser
 from rest_framework import serializers
 
 
@@ -37,4 +37,4 @@ class CourseUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CourseUser
-        fields = ('course', 'name', 'description', 'ratingsCount')
+        fields = ('id', 'course', 'user', 'name', 'description', 'ratingsCount', 'rating')

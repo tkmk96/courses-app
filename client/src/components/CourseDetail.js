@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import StarRatings from 'react-star-ratings';
 import axios from 'axios';
 import SimilarCourses from './SimilarCourses';
+import {USER_ID} from '../constants/constants';
 
 class CourseDetail extends Component {
 
@@ -14,6 +15,7 @@ class CourseDetail extends Component {
         const {id} = nextProps.match.params;
         if (id !== this.props.match.params.id) {
             this.getData(id);
+            this.setState({similarCourses: []});
         }
     }
 
@@ -36,6 +38,18 @@ class CourseDetail extends Component {
             const res = await axios.get(`/course/${r.recommended_course}/`);
             const {id, rating, name} = res.data;
             this.setState(prevState => ({similarCourses: [...prevState.similarCourses, {id, rating, name}]}));
+        });
+    };
+
+    buy = async courseId => {
+        const formData = new FormData();
+        formData.set('course', courseId);
+        formData.set('user', USER_ID);
+        const res = await axios({
+            method: 'post',
+            url: '/buy/',
+            data: formData,
+            config: { headers: {'Content-Type': 'multipart/form-data' }}
         });
     };
 
@@ -63,7 +77,12 @@ class CourseDetail extends Component {
                     <span className='count'>({course.ratingsCount} ratings)</span>
                 </div>
                 <h4 className='header'>{course.description}</h4>
-                <button className='btn btn-lg btn-warning'>Buy for {course.price} €</button>
+                <button
+                    className='btn btn-lg btn-warning'
+                    onClick={() => this.buy(course.id)}
+                >
+                    Buy for {course.price} €
+                </button>
                 <SimilarCourses header='People also bought' courses={this.state.similarCourses}/>
             </div>
         );
