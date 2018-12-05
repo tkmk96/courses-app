@@ -1,4 +1,4 @@
-from .models import Course, User, CourseUser, RecommendationPeopleBuy, RecommendationSimilarCourse, RecommendationForUser
+from .models import Course, User, RecommendationPeopleBuy, RecommendationSimilarCourse, RecommendationForUser, CourseUser
 from rest_framework import serializers
 
 

@@ -45,7 +45,7 @@ class CourseUser(models.Model):
 
     @property
     def ratingsCount(self):
-        ThirtyDaysAgo = datetime.datetime.now() - datetime.timedelta(days=30)
+        ThirtyDaysAgo = datetime.date.today() - datetime.timedelta(days=60)
         count = CourseUser.objects.filter(date__gte=ThirtyDaysAgo).filter(course=self.course).count()
         return count
 
