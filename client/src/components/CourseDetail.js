@@ -38,6 +38,11 @@ class CourseDetail extends Component {
         return(
             <div className='courseDetail col-sm-12'>
                 <h2 className='header'>{course.name}</h2>
+                <h3>
+                    <small>{course.lectures ? course.lectures + ' lectures | ' : '' }
+                        {course.difficulty}
+                    </small>
+                </h3>
                 <div className='ratings'>
                     <StarRatings
                         rating={course.rating}
