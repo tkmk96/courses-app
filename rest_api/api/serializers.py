@@ -29,4 +29,4 @@ class CourseUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CourseUser
-        fields = ('course', 'ratingsCount')
+        fields = ('course', 'name', 'description', 'ratingsCount')

@@ -49,6 +49,14 @@ class CourseUser(models.Model):
         count = CourseUser.objects.filter(date__gte=ThirtyDaysAgo).filter(course=self.course).count()
         return count
 
+    @property
+    def description(self):
+        return self.course.description
+
+    @property
+    def name(self):
+        return self.course.name
+
     class Meta:
         unique_together = ('course', 'user')
 

@@ -31,7 +31,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class TrendingViewSet(viewsets.ModelViewSet): #9549
     ThirtyDaysAgo = datetime.datetime.now() - datetime.timedelta(days=30)
-    queryset = sorted(CourseUser.objects.filter(date__gte=ThirtyDaysAgo)[:30], key=lambda t: t.ratingsCount, reverse=True)
+    queryset = sorted(CourseUser.objects.filter(date__gte=ThirtyDaysAgo)[:10], key=lambda t: t.ratingsCount, reverse=True)
 
     serializer_class = CourseUserSerializer
 
