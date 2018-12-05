@@ -9,6 +9,13 @@ class RecommendationPeopleBuySerializer(serializers.ModelSerializer):
         fields = ('recommended_course',)
 
 
+class RecommendationForUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RecommendationPeopleBuy
+        fields = ('recommended_course',)
+
+
 class RecommendationSimilarCourseSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -27,10 +34,11 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     courses = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    recommendations = RecommendationForUserSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'name', 'courses')
+        fields = ('id', 'name', 'courses', 'recommendations')
 
 
 class CourseUserSerializer(serializers.ModelSerializer):

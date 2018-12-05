@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {fetchMyCourses} from '../store/actions/index';
+import {fetchMyCourses, fetchSimilarCoursesForUser} from '../store/actions/index';
 import {connect} from 'react-redux';
 import CourseInfo from './CourseInfo';
 import SimilarCourses from './SimilarCourses';
@@ -8,6 +8,7 @@ class MyCourses extends Component {
 
     componentDidMount() {
         this.props.fetchMyCourses();
+        this.props.fetchSimilarCoursesForUser();
     }
 
     render() {
@@ -15,7 +16,7 @@ class MyCourses extends Component {
             <div className='myCourses col-sm-12'>
                 <h2 className='header'>My bought courses</h2>
                 <ul className='coursesList'>{this.renderCoursesList()}</ul>
-                <SimilarCourses header='Recommended for you' courses={this.props.myCourses}/>
+                <SimilarCourses header='Recommended for you' courses={this.props.similarCoursesForUser}/>
             </div>
         );
     }
@@ -28,6 +29,6 @@ class MyCourses extends Component {
         })
     }
 }
-const mapStateToProps = ({myCourses}) => ({myCourses});
+const mapStateToProps = ({myCourses, similarCoursesForUser}) => ({myCourses, similarCoursesForUser});
 
-export default connect(mapStateToProps, {fetchMyCourses})(MyCourses);
+export default connect(mapStateToProps, {fetchMyCourses, fetchSimilarCoursesForUser})(MyCourses);

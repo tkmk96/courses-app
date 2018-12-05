@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {
-    FETCHED_COURSE, FETCHED_MY_COURSE, FETCHED_MY_COURSES, FETCHED_SIMILAR_COURSE, FETCHED_TRENDING,
-    RESET_SIMILAR_COURSE
+    FETCHED_COURSE, FETCHED_MY_COURSE, FETCHED_MY_COURSES, FETCHED_SIMILAR_COURSE, FETCHED_SIMILAR_COURSE_FOR_USER,
+    FETCHED_TRENDING,
+    RESET_SIMILAR_COURSE, RESET_SIMILAR_COURSE_FOR_USER
 } from './types';
 import {USER_ID} from '../../constants/constants';
 
@@ -41,6 +42,22 @@ export const fetchCourse = (id) => {
             payload: res.data
         });
         dispatch(fetchSimilarCourses(res.data))
+    }
+};
+
+export const fetchSimilarCoursesForUser = () => {
+    return async dispatch => {
+        dispatch(resetSimilarCoursesForUser());
+        const res = await axios.get(`/user/${USER_ID}/`);
+        const courses = res.data.recommendations;
+        courses.forEach(async r => {
+            const res = await axios.get(`/course/${r.recommended_course}/`);
+            const {id, rating, name} = res.data;
+            dispatch({
+                type: FETCHED_SIMILAR_COURSE_FOR_USER,
+                payload: {id, rating, name}
+            });
+        });
     }
 };
 
@@ -116,6 +133,12 @@ export const fetchSimilarCourses = (course) => {
 export const resetSimilarCourses = () => {
     return {
         type: RESET_SIMILAR_COURSE
+    }
+};
+
+export const resetSimilarCoursesForUser = () => {
+    return {
+        type: RESET_SIMILAR_COURSE_FOR_USER
     }
 };
 
