@@ -8,7 +8,7 @@ PEOPLE_BUY = 1
 SIMILAR = 2
 
 
-def write_key_words(db):
+def write_key_words_csv(db):
     with open('KeyWords.csv', 'w', newline='', encoding='utf8') as file:
         fieldnames = ['keyword']
         writer = csv.DictWriter(file, fieldnames=fieldnames)
@@ -37,11 +37,34 @@ def get_word_count(courses):
 
 
 def similar_courses(db):
-    #db.delete_rec_similar()
-    #courses = db.get_all_courses()
-    #words = get_word_count(courses)
-    write_key_words(db)
-
+    db.delete_rec_similar()
+    courses = db.get_all_courses()
+    skipped = 0
+    for course_id, course in courses.items():
+        others = db.get_similar_courses(course_id)
+        if len(others.keys()) < 1:
+            skipped += 1
+            continue
+        result = []
+        lectures = course['lectures'] != 0
+        for other_id, other in others.items():
+            rating = other['match'] * 100
+            if course['difficulty'] == other['difficulty']:
+                rating += 30
+            if lectures and other['lectures'] != 0:
+                lratio = course['lectures'] / other['lectures']
+                if 0.7 < lratio < 1.3:
+                    rating += 10
+            pratio = course['price'] / other['price']
+            if 0.7 < pratio < 1.3:
+                rating += 25
+            result.append((other_id, rating))
+        result = sorted(result, key=lambda k: k[1], reverse=True)
+        result = result[:3]
+        for index, rec in enumerate(result):
+            db.insert_rec_similar_courses(course_id, rec[0], index)
+    db.commit()
+    print('Similar - skipped: ' + str(skipped) + ' / ' + str(len(courses.keys())))
 
 
 def people_buy(db):
@@ -72,7 +95,7 @@ def people_buy(db):
             others_sorted = others_sorted[:3]
         for index, rec in enumerate(others_sorted):
             db.insert_rec_people_buy(course_id, rec[0], index)
-            db.commit()
+    db.commit()
     print('People buy - skipped courses: ' + str(skipped) + ' / ' + str(len(courses_users.keys())))
 
 
