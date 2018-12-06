@@ -9,6 +9,7 @@ import MyCourses from './components/MyCourses';
 import CourseDetail from './components/CourseDetail';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
+import Test from './components/Test';
 
 class App extends Component {
     render() {
@@ -23,6 +24,7 @@ class App extends Component {
                             <Route path='/course-detail/:id' component={CourseDetail} />
                             <Route path='/login' component={LoginForm} />
                             <Route path='/register' component={RegisterForm} />
+                            <Route path='/test' component={Test} />
                         </div>
                     </div>
                 </Fragment>
